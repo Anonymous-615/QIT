@@ -64,9 +64,9 @@ def loop_of_match(adjmat, redundancy_mask, redundancy_node):
             redun_node_list.append(node_mask)
     redun_mat = torch.tensor([aa.tolist() for aa in redun_mat_list])
     redun_node = torch.tensor([aa.tolist() for aa in redun_node_list])
-    torch.save(redun_mat, '../data/split-adj-matrix/HAG_%s_r_mat.pt' % name)
-    torch.save(redun_node.T, '../data/split-adj-matrix/HAG_%s_hag.pt' % name)
-    torch.save(remain, '../data/split-adj-matrix/HAG_%s_u_mat.pt' % name)
+    torch.save(redun_mat, '../data/split_adj_matrix/HAG_%s_r_mat.pt' % name)
+    torch.save(redun_node.T, '../data/split_adj_matrix/HAG_%s_hag.pt' % name)
+    torch.save(remain, '../data/split_adj_matrix/HAG_%s_u_mat.pt' % name)
     # print("节省的操作数：", boost)
     # print("剩余的操作数：", torch.sum(remain))
     # print("加速比为：", (boost-torch.sum(redun_mat)-torch.sum(redun_node)) / torch.sum(matrix))
@@ -77,7 +77,7 @@ dataset = ['cora', 'citeseer', 'ppi', 'pubmed']
 device = torch.device('cuda')
 for id in range(4):
     name = dataset[id]
-    matrix = torch.load("../data/origin-adj-matrix/%s_matrix.pt" % name).float().to(device)
+    matrix = torch.load("../data/original_adj_matrix/%s_matrix.pt" % name).float().to(device)
     redun_mask = hag_redun_search(matrix)
     neighbor = get_neighbor_for_redun(redun_mask, matrix)
     loop_of_match(matrix, redun_mask, neighbor)

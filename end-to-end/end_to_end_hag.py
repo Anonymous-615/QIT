@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import time
 
 from torch import Tensor
-
+from torch_geometric.datasets import PPI
 
 
 def Linear(input, in_channel, out_channel):
@@ -99,15 +99,15 @@ for id in range(4):
     if id<3:
         dataset = torch_geometric.datasets.Planetoid(root='../data/%s/' % name[id], name='%s' % name[id].capitalize())
     else:
-        dataset=
+        dataset = PPI(root='../data/PPI')
     graph = dataset[0].to(device)
     in_channels = graph.x.shape[1]
     hidden_channels = 16
     out_channels = classes[id]
-    matrix = torch.load('../matrix/%s_matrix.pt' % name[id]).float().to(device)
-    u_mat = torch.load('../Rmat_Umat_QIT/HAG_%s_u_mat.pt' % name[id]).float().to(device)
-    r_mat = torch.load('../Rmat_Umat_QIT/HAG_%s_r_mat.pt' % name[id]).float().to(device)
-    qit = torch.load('../Rmat_Umat_QIT/HAG_%s_red_node.pt' % name[id]).float().T.to(device)
+    matrix = torch.load('../data/original_adj_matrix/%s_matrix.pt' % name[id]).float().to(device)
+    u_mat = torch.load('../data/split_adj_matrix/HAG_%s_u_mat.pt' % name[id]).float().to(device)
+    r_mat = torch.load('../data/split_adj_matrix/HAG_%s_r_mat.pt' % name[id]).float().to(device)
+    qit = torch.load('../data/split_adj_matrix/HAG_%s_red_node.pt' % name[id]).float().T.to(device)
 
     u_mat_sp = Tensor.to_sparse(u_mat)
     r_mat_sp = Tensor.to_sparse(r_mat)
