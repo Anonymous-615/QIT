@@ -39,7 +39,7 @@ r_mat_sp = Tensor.to_sparse(r_mat)
 qit_sp = Tensor.to_sparse(qit)
 matrix_sp = Tensor.to_sparse(matrix)
 aggr_all_time = 0
-
+qit_max_flag = torch.sum(r_mat) == max(torch.sum(r_mat), torch.sum(u_mat))
 
 def Linear(input, in_channel, out_channel):
     weight = nn.Parameter(torch.Tensor(out_channel, in_channel)).to(device)
@@ -47,44 +47,40 @@ def Linear(input, in_channel, out_channel):
 
 
 def Aggr(x):
-    # W = matrix.to_sparse()  # 转换为稀疏布尔型张量
+    # W = matrix.to_sparse()
     # return torch.sparse.mm(W, x)
     # print("x,matrix shape:",x.shape,matrix.shape)
     return torch.mm(matrix, x)
 
 
 def qit_Aggr(x, flag):
-    """
-    list1存储的是顶点对，list2存放掩码格式的冗余串，长度是2708
-    mode1:一般矩阵乘
-    mode2:稀疏矩阵乘
-    mode3:带冗余的一般矩阵乘
-    mode0:带冗余的稀疏矩阵乘
-    """
+
 
     start_aggr = time.time()
 
     if flag == 1:
         out1 = torch.mm(matrix, x)
-        # print("原始计算时间:", time.time() - start_aggr)
+
         return out1
 
     if flag == 2:
         out1 = torch.mm(u_mat, x)
         out2 = torch.mm(r_mat, x)
         out = torch.mm(qit, out2) + out1
-        # print("优化计算时间:", time.time() - start_aggr)
+
         return out
     if flag == 3:
         out4 = torch.sparse.mm(matrix_sp, x)
-        # print("原始的稀疏乘计算时间:", time.time() - start_aggr)
+
         return out4
 
     if flag == 4:
-        out5 = torch.sparse.mm(u_mat_sp, x)
-
-        # print("优化的稀疏乘计算时间:", time.time() - start_aggr)
-        return out5
+        if qit_max_flag:
+            out5 = torch.sparse.mm(r_mat_sp, x)
+            return out5
+        else:
+            out5 = torch.sparse.mm(u_mat_sp, x)
+            return out5
 
 
 def model(x):
@@ -113,10 +109,9 @@ def inference():
         # correct = float(pred[graph.test_mask].eq(graph.y[graph.test_mask]).sum().item())
         # acc = correct / graph.test_mask.sum().item()
     # print(f"acc : {acc}")
-    print("基于QIT聚合的GNN,数据集为：%s,设备为" % (name[id]), device, "总用时：", time.time() - start_all,
-          "聚合阶段用时：", aggr_all_time)
-    print()
-    print()
+    print("QIT-aggr based inference, dataset: %s,device: "%(name[id]),device)
+    print("Total time: ", time.time() - start_all)
+    print("Aggr time:",aggr_all_time)
 
 
 start = time.time()

@@ -60,8 +60,22 @@ python ./match/hag_match.py
 
 
 ## End to End
-QIT has four optional modes in end-to-end:
-1. QIT inference
-2. HAG infrence
-3. QIT train
-4. HAG train
+QIT has several optional modes in end-to-end:
+1. QIT inference:
+```
+python ./end-to-end/end_to_end.py
+```
+2. HAG infrence:
+```
+python ./end-to-end/end_to_end_hag.py
+```
+3. QIT/HAG train:
+```
+python ./end-to-end/end_to_end_train.py
+```
+
+If you want to try different device, change torch.device to 'cuda'. If you want to test different aggregation modes, change the 'flag' variable in the code.Flags from 1 to 4 correspond to: 
+- GEMM-based primitive aggregation 
+- GEMM-based QIT/HAG aggregation 
+- SPMM-based primitive aggregation 
+- SPMM-based QIT/HAG aggregation respectively

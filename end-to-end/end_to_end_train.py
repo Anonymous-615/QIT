@@ -21,21 +21,20 @@ class GraphConvolution(nn.Module):
         x = self.linear(x)
 
         if flag == 'origin':
-            # 原始聚合
-            x = torch.sparse.mm(A_sparse, x)  # 矩阵乘法，这里的adjacency_matrix就是A矩阵
+            # origin aggr
+            x = torch.sparse.mm(A_sparse, x)
 
         if flag == 'qit':
-            # QIT聚合
+            # QIT aggr
             if qit_max_flag:
                 x = torch.sparse.mm(qit_r_mat_sp, x)
             else:
                 x = torch.sparse.mm(qit_u_mat_sp, x)
         if flag == 'hag':
-            # HAG聚合
+            # HAG aggr
             out5 = torch.sparse.mm(hag_u_mat_sp, x)
             out6 = torch.sparse.mm(hag_r_mat_sp, x)
             x = torch.sparse.mm(hag_sp, out6) + out5
-
         return x
 
 
@@ -52,15 +51,12 @@ class GCN(nn.Module):
         return F.log_softmax(x, dim=1)
 
 
-# 假设数据集是一个特征矩阵X和邻接矩阵A
-# 假设你有一个训练函数 train_model(model, data, labels)，用于模型训练
-# 在这个函数中，你需要定义损失函数、优化器以及训练过程
-# 这里提供一个简单的示例训练过程：
+
 
 def train_model(model, data, labels, epochs=100, lr=0.01):
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-    #criterion = nn.NLLLoss()  # 负对数似然损失函数
-    criterion = torch.nn.BCEWithLogitsLoss()        #给ppi用的
+    #criterion = nn.NLLLoss()
+    criterion = torch.nn.BCEWithLogitsLoss()
     for epoch in range(epochs):
         model.train()
         optimizer.zero_grad()
@@ -74,22 +70,39 @@ def train_model(model, data, labels, epochs=100, lr=0.01):
             print(f"Epoch {epoch + 1}/{epochs} - Loss: {loss.item()}")
 
 
-# 使用示例：
-# 假设你有特征数据 X，标签数据 y，邻接矩阵 A
-# 初始化模型
+
 name = ['cora', 'citeseer', 'pubmed', 'ppi', 'ogb']
+# classes = [7, 6, 3, 121, 41]
 device = torch.device('cuda')
 id = 3
-# dataset = Planetoid(root='../data/%s'%name[id],name='Citeseer')
-# X=dataset[0].x.to(device)
-# y=dataset[0].y.to(device)
-dataset = PPI(root='../data/PPI')
-X = dataset[18].x.to(device)
-y = dataset[18].y.to(device)
+
+
+if name[id]=='cora':
+    dataset = Planetoid(root='../data/%s'%name[id],name='Cora')
+    X=dataset[0].x.to(device)
+    y=dataset[0].y.to(device)
+    out_features = len(torch.unique(y))
+if name[id]=='citeseer':
+    dataset = Planetoid(root='../data/%s'%name[id],name='Citeseer')
+    X=dataset[0].x.to(device)
+    y=dataset[0].y.to(device)
+    out_features = len(torch.unique(y))
+if name[id] == 'pubmed':
+    dataset = Planetoid(root='../data/%s'%name[id],name='Pubmed')
+    X=dataset[0].x.to(device)
+    y=dataset[0].y.to(device)
+    out_features = len(torch.unique(y))
+
+
+if name[id] == 'ppi':
+    dataset = PPI(root='../data/PPI')
+    X = dataset[18].x.to(device)
+    y = dataset[18].y.to(device)
+    out_features = 121
 
 A = torch.load('../data/original_adj_matrix/%s_matrix.pt' % name[id]).float().to(device)
 A_sparse = Tensor.to_sparse(A)
-classes = [7, 6, 3, 121, 41]
+
 qit_u_mat = torch.load('../data/split_adj_matrix/%s_u_mat.pt' % name[id]).float().to(device)
 qit_r_mat = torch.load('../data/split_adj_matrix/%s_r_mat.pt' % name[id]).float().to(device)
 # qit = torch.load('../rename/%s_red_node.pt' % name[id]).T.float().to(device)
@@ -106,23 +119,17 @@ hag_u_mat_sp = Tensor.to_sparse(hag_u_mat)
 hag_r_mat_sp = Tensor.to_sparse(hag_r_mat)
 hag_sp = Tensor.to_sparse(hag)
 
-in_features = X.shape[1]  # 输入特征维度
-hidden_features = 16  # 隐藏层特征维度
-
-#out_features = len(torch.unique(y))  # 输出类别数，假设是分类任务
-out_features=121    #给ppi用
-
+in_features = X.shape[1]
+hidden_features = 16
 
 mode = ['origin', 'qit', 'hag']
 flag = mode[2]
 gcn_model = GCN(in_features, hidden_features, out_features).to(device)
 qit_max_flag = torch.sum(qit_r_mat) == max(torch.sum(qit_r_mat), torch.sum(qit_u_mat))
 
-# 假设你有训练数据 data, labels
-# 假设 data 是特征矩阵，labels 是对应的标签
-# 这里还需要假设有一个邻接矩阵 adjacency_matrix，用于图结构表示
+
 begin_time = time.time()
 train_model(gcn_model, X, y)
 
-str = f'数据集为：{name[id]}，设备为：{device}，聚合模式为：{flag}，训练时间为：{time.time() - begin_time}'
+str = f'dataset: {name[id]}, device: {device}, aggregation mode: {flag}，train time: {time.time() - begin_time}'
 print(str)
