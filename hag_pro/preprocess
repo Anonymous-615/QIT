@@ -1,0 +1,38 @@
+import torch
+
+
+def search_redun(mat):
+    redun1 = torch.mm(mat, mat.T).fill_diagonal_(0)
+    redun1[redun1 < 2] = 0
+    indice1 = torch.where(redun1 != 0)
+    red_mask1 = mat[indice1[0]] * mat[indice1[1]]
+    unique_mat1 = torch.unique(red_mask1, dim=0, return_inverse=True)[0]
+    # print("冗余串的数量为", unique_mat1.shape, "规模为", torch.sum(unique_mat1))
+    # print()
+    return unique_mat1
+
+
+matrix = torch.load('cora_matrix.pt').float()
+redun_level0 = search_redun(matrix)
+#
+
+
+# matrix=torch.load('cora_matrix.pt').float()
+redun_mask = redun_level0
+redun_adj = torch.ones([redun_mask.shape[0], redun_mask.shape[0]])
+redun_elements = torch.mm(redun_mask, redun_mask.T).fill_diagonal_(0)
+for i in range(redun_elements.shape[0]):
+    index = torch.where(redun_elements[i])[0]
+    redun_adj[i][index] = 0
+# for i in range(redun_adj.shape[0]):
+#     pri=f'redun str ID：{i}，conponent: {torch.where(redun_mask[i])[0]}, conflict redun str ID：{torch.where(redun_adj[i]==0)[0]}'
+#     print(pri)
+torch.save(redun_adj,'hag_pro_redun_adj.pt')
+redun = redun_mask  # torch.load('hag-pro_redun_mask.pt')
+boost = torch.zeros(redun.shape[0])
+for i in range(redun.shape[0]):
+    subtract = matrix - redun[i]
+    index = torch.where(torch.all(subtract >= 0, dim=1))[0]
+    boost[i] = (index.shape[0] - 1) * (torch.sum(redun[i]) - 1)
+    print("redun str ID：%d, boost:%d, boost sourse: " % (i, boost[i]), index)
+torch.save(boost, 'hag_pro_str_boost.pt')
