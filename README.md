@@ -6,7 +6,7 @@ By leveraging multiple levels of overlapping neighbors and many-to-many dependen
 This enables us to efficiently eliminate redundancy in the aggregation process for GNN, resulting in significant improvements in performance.
 Our experiments with real-world graph datasets show that compared with SOTA--HAG, QIT improves redundancy elimination by 762%, improves speedup of GNN training tasks up to 359%, inference tasks up to 771%, and reduces memory overhead by over 77%.
 
-This repo is consisting of three parts: (1) Redundancy Searching (2) Redundancy Matching (3) End to End.
+This repo is consisting of four parts: (1) Redundancy Searching (2) Redundancy Matching (3) End to End (4) Compared to HAG-PRO.
 
 **Requirements**
 
@@ -81,7 +81,7 @@ If you want to try different device, change torch.device to 'cuda'. If you want 
 - SPMM-based QIT/HAG aggregation respectively
 
 
-## Compared to HAG-pro
+## Compared to HAG-PRO
 
 The improved version of HAG (hereinafter referred to as HAG-pro) announced that they have enhanced the redundant matching algorithm of HAG using a partial greedy approach, thereby improving the overall redundancy elimination effectiveness. The paper can be found at （https://ieeexplore.ieee.org/abstract/document/9517814）.
 
