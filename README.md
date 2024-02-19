@@ -95,7 +95,7 @@ To run our replicated redundancy elimination experiments of HAG-PRO:
 ```
 python ./hag_pro/preprocess.py
 ```
-2. DFS-based maximal matching of hypergraphs:
+2. DFS-based maximum weighted-hypergraph matching:
 ```
 python ./hag_pro/hag_pro_boost_based_01pack.py
 ```
