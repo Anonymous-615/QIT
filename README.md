@@ -87,6 +87,8 @@ The improved version of HAG (hereinafter referred to as HAG-pro) announced that 
 
 According to our experiment results, HAG-PRO cannot guarantee that its redundancy elimination effectiveness is strictly superior to HAG. HAG-PRO equates the redundancy matching problem to maximum weighted-hypergraph matching problems and compromises algorithm execution speed by seeking an approximate solution to this problem as the matching result. We exhaustively searched for all solutions on smaller datasets and obtained the globally optimal solution. Experimental results indicate that in the cora and citeseer datasets, the redundancy elimination effectiveness of HAG-PRO is inferior to that of HAG. This is mainly because in HAG-PRO, if two redundant strings are mutually exclusive, then they cannot be adopted simultaneously. However, in HAG and QIT, redundant strings can only be unable to simultaneously accelerate a subtask when they are mutually exclusive for that specific subtask.
 
+Therefore, in our paper, QIT is not compared with HAG-PRO, but the more effective HAG is used as our benchmark.
+
 To run our replicated redundancy elimination experiments of HAG-PRO:
 
 1. Find redundancy, compute hyperedge weights, get mutual exclusion between hyperedges:
