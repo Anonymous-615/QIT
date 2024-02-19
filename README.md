@@ -99,7 +99,7 @@ python ./hag_pro/preprocess.py
 ```
 python ./hag_pro/hag_pro_boost_based_01pack.py
 ```
-3.As a comparison, to run HAG's redundant matching results:
+3. As a comparison, to run HAG's redundant matching results:
 ```
 python ./hag_pro/hag_boost.py
 ```
