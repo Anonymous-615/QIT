@@ -10,10 +10,11 @@ This repo is consisting of four parts: (1) End to End training and inference per
 **Requirements**
 ```
     pip install pytorch=1.11.0=py3.8_cuda11.3_cudnn8_0
+
     pip install pyg=2.0.4=py38_torch_1.11.0_cu113
 ```
 
-## Get start
+## End to End training and inference performance
 
 To run the end-to-end performance of QIT:
 ```
@@ -21,8 +22,9 @@ python main
 ```
 
 
-## Redundancy Searching
-To search for the Redundancy Set from datasets above, QIT has several optional modes:
+## Redundancy-Elimination performance
+We evaluate the redundancy elimination rate of the GNN aggregation operator by comparing the change in the total edge number of the graph before and after redundancy elimination.
+The formula is：100% \times (len(redun_eli_edge_index)/len(origin_edge_index))
 
 1. GEMM based search
 2. Iterator based search
@@ -39,7 +41,7 @@ Then run the code:
 python ./search/multi_redun.py
 ```
 So you can get the single-layer redundancy set by gemm based search.
-## Redundancy Matching
+## Heuristic performance
 To match the Redundancy Set and adjacency matrix, QIT has several optional modes:
 1. Many-to-many
 2. 1-to-1
@@ -57,7 +59,7 @@ python ./match/hag_match.py
 ```
 
 
-## End to End
+## Match performance
 QIT has several optional modes in end-to-end:
 1. QIT inference:
 ```
@@ -79,7 +81,7 @@ If you want to try different device, change torch.device to 'cuda'. If you want 
 - SPMM-based QIT/HAG aggregation respectively
 
 
-## Compared to HAG-PRO
+## Compared to HAG and HAG-PRO
 
 The improved version of HAG (hereinafter referred to as HAG-pro) announced that they have enhanced the redundant matching algorithm of HAG using a partial greedy approach, thereby improving the overall redundancy elimination effectiveness. The paper can be found at （https://ieeexplore.ieee.org/abstract/document/9517814）.
 
