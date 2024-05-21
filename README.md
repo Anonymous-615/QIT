@@ -1,25 +1,23 @@
-# QIT: Redundancy-eliminate-algorithm for GNN aggregation
-GNN is widely used but faces a challenge in accelerating node aggregation due to inherent computational redundancy. 
-This redundancy adds significant duplicates in forward computation and data transfers. 
-We propose an efficient algorithm called QIT that introduces a redundancy string model to generalize groups of vertices used multiple times. 
-By leveraging multiple levels of overlapping neighbors and many-to-many dependencies among overlapping nodes, our algorithm achieves finer-grained matching of overlapping neighbors and improves the searching process in the graph. 
-This enables us to efficiently eliminate redundancy in the aggregation process for GNN, resulting in significant improvements in performance.
-Our experiments with real-world graph datasets show that compared with SOTA--HAG, QIT improves redundancy elimination by 762%, improves speedup of GNN training tasks up to 359%, inference tasks up to 771%, and reduces memory overhead by over 77%.
+# QIT: Redundancy-Elimination system for GNN
 
-This repo is consisting of four parts: (1) Redundancy Searching (2) Redundancy Matching (3) End to End (4) Compared to HAG-PRO.
+QIT is an optimization tool library for GNN. It can find and eliminate redundancy based on the topological structure of the input data graph, thereby reducing the calculation and data handling of GNN. This process is accuracy-free.
+
+QIT is compatible with other commonly used GNN optimization techniques such as quantization, sampling, sparsification, etc., and will not affect the correctness of the above methods, although the optimization effect may be diluted in some cases (such as sampling, which indirectly changes the topology of the graph structure, thereby affecting the optimization quality of QIT).
+
+This repo is consisting of four parts: (1) End to End training and inference performance. (2) Redundancy-Elimination performance. (3) Heuristic performance. (4) Match performance.
+
 
 **Requirements**
-
-
 ```
     pip install pytorch=1.11.0=py3.8_cuda11.3_cudnn8_0
     pip install pyg=2.0.4=py38_torch_1.11.0_cu113
 ```
 
 ## Get start
-To get started, you need to download datasets and extract the corresponding adjacency matrix from them:
+
+To run the end-to-end performance of QIT:
 ```
-python ./dataset/get_dataset.py
+python main
 ```
 
 
