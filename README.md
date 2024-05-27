@@ -10,8 +10,13 @@ This repo is consisting of four parts: (1) End to End training and inference per
 **Requirements**
 ```
     pip install pytorch=1.11.0=py3.8_cuda11.3_cudnn8_0
-
     pip install pyg=2.0.4=py38_torch_1.11.0_cu113
+```
+
+If the environment is configured incorrectly, try:
+
+```
+conda env create -f environment.yml
 ```
 
 ## End to End training and inference performance
