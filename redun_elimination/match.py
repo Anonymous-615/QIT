@@ -143,13 +143,14 @@ def hag_search_and_match(mat):
     red_mask = mat[indice[0]] * mat[indice[1]]
 
 
-    # index = torch.randperm(unique.size(0))
+    
     neighbors = torch.zeros([red_mask.shape[0], mat.shape[0]])
     for i in range(neighbors.shape[0]):
         row,col=indice[0][i],indice[1][i]
         neighbors[i][row] = 1
         neighbors[i][col] = 1
-
+        
+    # index = torch.randperm(unique.size(0))
     index = torch.sort(torch.sum(red_mask, dim=1), descending=True)[1]
     rst, neighbor = red_mask[index], neighbors[index]
     arst_ind = []
