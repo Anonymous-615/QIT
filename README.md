@@ -78,5 +78,22 @@ name = 'hag'
 
 ## Match performance
 We evaluate the redundancy elimination rate on different redundancy matching mode by comparing the change in the total edge number of the graph before and after redundancy elimination.
+Supported Match modes are:
+(1)QIT-Match
+(2)HAG-Match
+(3)HAG-PRO-Mode1-Match
+(4)HAG-PRO-Mode2-Match
 
+To change the Match mode, first uniformly change heus to RAND for different methods, including loop_of_match(), hag_search_and_match(), hag_pro_search_and_match(), hag_pro_HUB_search_and_match() in redun_elimination/match.py. Take hag_search_and_match() for example (line 153):
+
+```
+index = torch.randperm(unique.size(0))
+```
+
+
+
+Then modify the code in utils/loader.py in lines 22-25 to execute different Match mode of Redundancy-Elimination. For example, to run HAG based GNN end-to-end task:
+```
+redun_free_edge_index = redun_eliminate_hag(data).to(device) 
+```
 
