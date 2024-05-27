@@ -19,7 +19,10 @@ def load_data(name, device):
     else:
         dataset = Planetoid(root='./data/' + name + '/', name=name)
         data = dataset[0].to(device)
-    redun_free_edge_index = redun_eliminate_qit(data).to(device)
+        redun_free_edge_index = redun_eliminate_qit(data).to(device)        #option1: QIT-redun-elimination
+        # redun_free_edge_index = redun_eliminate_hag(data).to(device)      #option2: HAG-redun-elimination
+        # redun_free_edge_index = redun_eliminate_hagPro(data).to(device)   #option3: HAG-PRO-HEU1-redun-elimination
+        # redun_free_edge_index = redun_eliminate_hagPro2(data).to(device)  #option4: HAG-PRO-HEU2-redun-elimination
     num_node_features = dataset.num_node_features
 
 
