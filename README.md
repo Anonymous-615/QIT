@@ -26,26 +26,38 @@ To run the end-to-end performance of QIT:
 python main
 ```
 
+Modify the code in utils/loader.py in lines 22-25 to execute other Redundancy-Elimination mode. For example, to run HAG based GNN end-to-end task:
+```
+redun_free_edge_index = redun_eliminate_hag(data).to(device) 
+```
+
+Then run the code:
+```
+python main
+```
+
+
 
 ## Redundancy-Elimination performance
 We evaluate the redundancy elimination rate of the GNN aggregation operator by comparing the change in the total edge number of the graph before and after redundancy elimination.
 The formula is：100% \times (len(redun_eli_edge_index)/len(origin_edge_index))
 
-1. GEMM based search
-2. Iterator based search
-3. Multi-level search
-4. Single level search
+To get the boosts of qit, uncomment lines 14-18 of main.py:
 
-Modify the code of search/multi_redun.py in lines 14 and 15 to execute the corresponding pattern. For example:
 ```
-search_mode='gemm'
-search_level='single'
+    # optional:Redundancy-Elimination Performance
+    origin_edge=datas[0].edge_index
+    redun_eli_edge=datas[3]
+    boost=(1-len(redun_eli_edge)/len(origin_edge))*100
+    print('Redundancy-Elimination Boost: %.2f'%boost)
 ```
-Then run the code:
-```
-python ./search/multi_redun.py
-```
-So you can get the single-layer redundancy set by gemm based search.
+
+
+
+
+
+
+
 ## Heuristic performance
 To match the Redundancy Set and adjacency matrix, QIT has several optional modes:
 1. Many-to-many
