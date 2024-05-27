@@ -23,7 +23,7 @@ conda env create -f environment.yml
 
 To run the end-to-end performance of QIT:
 ```
-python main
+python main.py
 ```
 
 Modify the code in utils/loader.py in lines 22-25 to execute other Redundancy-Elimination mode. For example, to run HAG based GNN end-to-end task:
@@ -33,7 +33,7 @@ redun_free_edge_index = redun_eliminate_hag(data).to(device)
 
 Then run the code:
 ```
-python main
+python main.py
 ```
 
 
@@ -57,46 +57,26 @@ To evaluate other mothods, modify the code in utils/loader.py in lines 22-25 to 
 
 
 ## Heuristic performance
-To match the Redundancy Set and adjacency matrix, QIT has several optional modes:
-1. Many-to-many
-2. 1-to-1
-3. Length based sort
-4. Contribution based sort ( length * times)
-5. other sort mode
+We evaluate the redundancy elimination rate on different heuristics by comparing the change in the total edge number of the graph before and after redundancy elimination.
+Supported heuristics are:
+(1)QIT
+(2)HAG
+(3)HAG-PRO
+(4)Random
+(5)Default order
 
-To run many-to-many mode, use:
+To change the heus, modify lines 53-57 of redun_elimination/match.py. For example, to run the redundancy-elimination by QIT-heu:
+
 ```
-python ./match/qit_match.py
-```
-To run 1-to-1 mode, use:
-```
-python ./match/hag_match.py
+name = 'conflict'
 ```
 
+Or to run the redundancy-elimination by HAG-heu:
+```
+name = 'hag'
+```
 
 ## Match performance
-QIT has several optional modes in end-to-end:
-1. QIT inference:
-```
-python ./end-to-end/end_to_end.py
-```
-2. HAG infrence:
-```
-python ./end-to-end/end_to_end_hag.py
-```
-3. QIT/HAG train:
-```
-python ./end-to-end/end_to_end_train.py
-```
+We evaluate the redundancy elimination rate on different redundancy matching mode by comparing the change in the total edge number of the graph before and after redundancy elimination.
 
-If you want to try different device, change torch.device to 'cuda'. If you want to test different aggregation modes, change the 'flag' variable in the code.Flags from 1 to 4 correspond to: 
-- GEMM-based primitive aggregation 
-- GEMM-based QIT/HAG aggregation 
-- SPMM-based primitive aggregation 
-- SPMM-based QIT/HAG aggregation respectively
-
-
-
-python ./hag_pro/hag_boost.py
-```
 
