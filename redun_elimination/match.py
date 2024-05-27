@@ -50,6 +50,10 @@ def generate_three_floats():
 
 
 def get_sorted(mask, neighbor, adj):
+    # name = 'conflict'
+    # name = 'hag'
+    # name = 'hag-pro'
+    # name = 'order'
     name = 'rand'
     redun_len = torch.sum(mask, dim=1)
     redun_node_len = torch.sum(neighbor, dim=1)
