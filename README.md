@@ -7,7 +7,7 @@ QIT is compatible with other commonly used GNN optimization techniques such as q
 This repo is consisting of four parts: (1) End to End training and inference performance. (2) Redundancy-Elimination performance. (3) Heuristic performance. (4) Match performance.
 
 
-**Requirements**
+##Requirements
 ```
     pip install pytorch=1.11.0=py3.8_cuda11.3_cudnn8_0
     pip install pyg=2.0.4=py38_torch_1.11.0_cu113
